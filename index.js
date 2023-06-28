@@ -1,5 +1,10 @@
 /**
  * @author Shyam Hajare <hajareshyam@gmail.com>
+ *
+ *  Small Changes due to missing rendering of dynamic content in head:
+ *
+ *  @author Thomas Simon <t.simon@live.com>
+ *    - Added support for dynamic content in head
  */
 
 /**
