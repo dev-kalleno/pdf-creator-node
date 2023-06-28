@@ -11,6 +11,7 @@
 var Handlebars = require("handlebars");
 var pdf = require("html-pdf");
 
+
 Handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
     switch (operator) {
         case "==":
@@ -38,19 +39,29 @@ Handlebars.registerHelper("ifCond", function (v1, operator, v2, options) {
     }
 });
 
+Handlebars.registerHelper('safe', function (text, url) {
+    text = Handlebars.Utils.escapeExpression(text);
+    return new Handlebars.SafeString("{{" + text + "}}");
+});
+//
+// Handlebars.registerHelper('loud', function (aString) {
+//   console.log(aString);
+//   return aString.toUpperCase()
+// })
+
 var create = function (document, options) {
     return new Promise((resolve, reject) => {
         if (!document || !document.html || !document.data) {
             reject(new Error("Some, or all, options are missing."));
         }
         // Compiles a template
-
+        // options.header.contents = options.header.contents.replace(/{{page}}/g, "{page}").replace(/{{pages}}/g, "{pages}");
+        // document.html = document.html.replace(/{{page}}/g, "{page}").replace(/{{pages}}/g, "{pages}");
+        // options.footer.contents = options.footer.contents.replace(/{{page}}/g, "{page}").replace(/{{pages}}/g, "{pages}");
+        options.header.contents = Handlebars.compile(options.header.contents)(document.data);
 
         var html = Handlebars.compile(document.html)(document.data);
 
-
-        options.header.contents = Handlebars.compile(options.header.contents)(document.data);
-        options.footer.contents = Handlebars.compile(options.footer.contents)(document.data);
 
         var pdfPromise = pdf.create(html, options);
 
